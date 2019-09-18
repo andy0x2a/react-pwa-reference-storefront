@@ -21,18 +21,24 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import * as cortex from '@elasticpath/cortex-client';
 import AppHeaderSearchMain from '../AppHeaderSearch/appheadersearch.main';
 import AppHeaderLoginMain from '../AppHeaderLogin/appheaderlogin.main';
 import AppHeaderLocaleMain from '../AppHeaderLocale/appheaderlocale.main';
 import AppHeaderNavigationMain from '../AppHeaderNavigation/appheadernavigation.main';
 import AppHeaderTop from '../AppHeaderTop/appheadertop.main';
 import BulkOrderMain from '../BulkOrder/bulkorder.main';
-import headerLogo from '../../../app/src/images/site-images/Company-Logo-v2.svg';
-import { cortexFetch } from '../utils/Cortex';
-import { login } from '../utils/AuthService';
+import headerLogo from '../images/site-images/Company-Logo-v2.svg';
+import { ClientContext } from '../ClientContext';
 
 import './appheader.main.less';
 import { getConfig, IEpConfig } from '../utils/ConfigProvider';
+
+const zoomArray: cortex.RootFetch = {
+  defaultcart: {
+    additemstocartform: {},
+  },
+};
 
 let Config: IEpConfig | any = {};
 let intl = { get: str => str };
@@ -67,7 +73,7 @@ interface AppHeaderMainProps {
 }
 
 interface AppHeaderMainState {
-    cartData: any,
+    cartData: cortex.Cart,
     isLoading: boolean,
     isOffline: boolean,
     isSearchFocused: boolean,
@@ -75,13 +81,10 @@ interface AppHeaderMainState {
     isDesktop: boolean,
     isLoggedInUser: boolean,
 }
-// Array of zoom parameters to pass to Cortex
-const zoomArray = [
-  'defaultcart',
-  'defaultcart:additemstocartform',
-];
 
 class AppHeaderMain extends React.Component<AppHeaderMainProps, AppHeaderMainState> {
+  static contextType = ClientContext;
+
   static defaultProps = {
     checkedLocation: false,
     isInStandaloneMode: false,
@@ -99,6 +102,8 @@ class AppHeaderMain extends React.Component<AppHeaderMainProps, AppHeaderMainSta
     appHeaderTopLinks: {},
     appModalLoginLinks: {},
   };
+
+  client: cortex.IClient;
 
   constructor(props) {
     super(props);
@@ -119,14 +124,15 @@ class AppHeaderMain extends React.Component<AppHeaderMainProps, AppHeaderMainSta
     this.updatePredicate = this.updatePredicate.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.client = this.context;
     this.updatePredicate();
     window.addEventListener('resize', this.updatePredicate);
-    this.fetchCartData();
+    await this.fetchCartData();
   }
 
-  componentWillReceiveProps() {
-    this.fetchCartData();
+  async componentWillReceiveProps() {
+    await this.fetchCartData();
   }
 
   componentWillUnmount() {
@@ -151,32 +157,18 @@ class AppHeaderMain extends React.Component<AppHeaderMainProps, AppHeaderMainSta
     });
   }
 
-  fetchCartData() {
-    login().then(() => {
-      cortexFetch(`/?zoom=${zoomArray.sort().join()}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: localStorage.getItem(`${Config.cortexApi.scope}_oAuthToken`),
-        },
-      })
-        .then(res => res.json())
-        .then((res) => {
-          if (res && res._defaultcart) {
-            this.setState({
-              cartData: res._defaultcart[0],
-              isLoading: false,
-            });
-          } else {
-            this.setState({
-              isLoading: false,
-            });
-          }
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error.message);
-        });
-    });
+  async fetchCartData() {
+    try {
+      const root = await this.client.root().fetch(zoomArray);
+
+      this.setState({
+        cartData: root.defaultcart,
+        isLoading: false,
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }
 
   goBack() {
@@ -274,16 +266,16 @@ class AppHeaderMain extends React.Component<AppHeaderMainProps, AppHeaderMainSta
             {(!Config.b2b.enable || (Config.b2b.enable && availability)) && (
               <div className="cart-link-container">
                 <Link className="cart-link" to={appHeaderLinks.myBag}>
-                  {cartData && cartData['total-quantity'] !== 0 && !isLoading && (
+                  {cartData && cartData.totalQuantity !== 0 && !isLoading && (
                     <span className="cart-link-counter">
-                      {cartData['total-quantity']}
+                      {cartData.totalQuantity}
                     </span>
                   )}
                   {intl.get('shopping-bag-nav')}
                 </Link>
               </div>
             )}
-            {(Config.b2b.enable && availability) && (cartData && cartData._additemstocartform) && (
+            {(Config.b2b.enable && availability) && (cartData && cartData.additemstocartform) && (
               <div className="bulk-container">
                 <button type="button" className="bulk-button" onClick={() => { this.openModal(); }} />
               </div>
@@ -343,9 +335,9 @@ class AppHeaderMain extends React.Component<AppHeaderMainProps, AppHeaderMainSta
                 <div data-toggle="collapse" data-target=".collapsable-container">
                   {intl.get('shopping-bag-nav')}
                   <div className="cart-link-counter-container">
-                    {cartData && cartData['total-quantity'] !== 0 && !isLoading && (
+                    {cartData && cartData.totalQuantity !== 0 && !isLoading && (
                       <span className="cart-link-counter">
-                        {cartData['total-quantity']}
+                        {cartData.totalQuantity}
                       </span>
                     )}
                   </div>

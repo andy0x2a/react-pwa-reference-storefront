@@ -21,40 +21,50 @@
 
 import React from 'react';
 import intl from 'react-intl-universal';
+import * as cortex from '@elasticpath/cortex-client';
 import { RouteComponentProps } from 'react-router-dom';
 import Modal from 'react-responsive-modal';
 import {
-  ProfileInfoMain, ProfileemailinfoMain, ProfileAddressesMain, ProfilePaymentMethodsMain, OrderHistoryMain, AddressFormMain,
+  ProfileInfoMain,
+  ProfileemailinfoMain,
+  ProfileAddressesMain,
+  ProfilePaymentMethodsMain,
+  OrderHistoryMain,
+  AddressFormMain,
+  ClientContext,
 } from '@elasticpath/store-components';
-import { login } from '../utils/AuthService';
-import { cortexFetch } from '../utils/Cortex';
 import Config from '../ep.config.json';
 
 import './ProfilePage.less';
 
-// Array of zoom parameters to pass to Cortex
-const zoomArray = [
-  'defaultprofile',
-  'defaultprofile:purchases',
-  'defaultprofile:purchases:element',
-  'defaultprofile:addresses',
-  'defaultprofile:addresses:addressform',
-  'defaultprofile:emails',
-  'defaultprofile:emails:element',
-  'defaultprofile:emails:element:list',
-  'defaultprofile:emails:element:profile',
-  'defaultprofile:emails:emailform',
-  'defaultprofile:emails:profile',
-  'defaultprofile:addresses:element',
-  'defaultprofile:addresses:billingaddresses:default',
-  'defaultprofile:paymentmethods',
-  'defaultprofile:paymentmethods:paymenttokenform',
-  'defaultprofile:paymentmethods:element',
-  'passwordresetform',
-];
+const zoomArray: cortex.RootFetch = {
+  defaultprofile: {
+    purchases: {
+      element: {},
+    },
+    addresses: {
+      addressform: {},
+      element: {},
+      billingaddresses: {
+        default: {},
+      },
+    },
+    emails: {
+      element: {
+        list: {},
+        profile: {},
+      },
+      emailform: {},
+    },
+    paymentmethods: {
+      paymenttokenform: {},
+      element: {},
+    },
+  },
+};
 
 interface ProfilePageState {
-    profileData: any,
+    profileData: cortex.Profile,
     invalidPermission: boolean,
     showResetPasswordButton: boolean,
     openAddressModal: boolean,
@@ -62,6 +72,10 @@ interface ProfilePageState {
 }
 
 class ProfilePage extends React.Component<RouteComponentProps, ProfilePageState> {
+  static contextType = ClientContext;
+
+  client: cortex.IClient;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -78,43 +92,39 @@ class ProfilePage extends React.Component<RouteComponentProps, ProfilePageState>
     this.handleCloseAddressModal = this.handleCloseAddressModal.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchProfileData();
+  async componentDidMount() {
+    this.client = this.context;
+    await this.fetchProfileData();
   }
 
-  componentWillReceiveProps() {
-    this.fetchProfileData();
+  async componentWillReceiveProps() {
+    await this.fetchProfileData();
   }
 
-  fetchProfileData() {
-    login().then(() => {
-      cortexFetch(`/?zoom=${zoomArray.join()}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: localStorage.getItem(`${Config.cortexApi.scope}_oAuthToken`),
-          },
-        })
-        .then(res => res.json())
-        .then((res) => {
-          if (res && res._defaultprofile) {
-            this.setState({
-              profileData: res._defaultprofile[0],
-            });
-          } else {
-            this.setState({
-              invalidPermission: true,
-            });
-          }
-          if (res && res._passwordresetform) {
-            this.setState({ showResetPasswordButton: true });
-          }
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error.message);
+  async fetchProfileData(data) {
+    const { profileData } = this.state;
+    if (data) {
+      this.setState({
+        profileData: { ...profileData, ...data },
+      });
+      return;
+    }
+    try {
+      const root = await this.client.root().fetch(zoomArray);
+
+      if (root) {
+        this.setState({
+          profileData: root.defaultprofile,
         });
-    });
+      } else {
+        this.setState({
+          invalidPermission: true,
+        });
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }
 
   checkPermissions() {
@@ -179,7 +189,7 @@ class ProfilePage extends React.Component<RouteComponentProps, ProfilePageState>
 
   render() {
     const { profileData, showResetPasswordButton } = this.state;
-    const disableAddPayment = !(profileData && profileData._addresses && profileData._addresses[0]._billingaddresses);
+
     return (
       <div>
         <div className="container profile-container">
@@ -206,8 +216,8 @@ class ProfilePage extends React.Component<RouteComponentProps, ProfilePageState>
                   </div>
                 </div>
               </div>
-              {(profileData._purchases) ? (
-                <OrderHistoryMain purchaseHistory={profileData._purchases[0]} />
+              {(profileData.purchases) ? (
+                <OrderHistoryMain purchaseHistory={profileData.purchases} />
               ) : ('')}
               <div className="profile-info-container">
                 <h3 className="profile-info-container-title">
@@ -215,8 +225,8 @@ class ProfilePage extends React.Component<RouteComponentProps, ProfilePageState>
                 </h3>
                 <div className="profile-info-col">
                   <div className="profile-info-block">
-                    {(profileData._addresses) ? (
-                      <ProfileAddressesMain addresses={profileData._addresses[0]} onChange={this.fetchProfileData} onAddNewAddress={this.handleNewAddress} onEditAddress={this.handleEditAddress} />
+                    {(profileData.addresses) ? (
+                      <ProfileAddressesMain addresses={profileData.addresses} onChange={this.fetchProfileData} onAddNewAddress={this.handleNewAddress} onEditAddress={this.handleEditAddress} />
                     ) : ('')}
                     {this.renderNewAddressModal()}
                   </div>
@@ -228,8 +238,8 @@ class ProfilePage extends React.Component<RouteComponentProps, ProfilePageState>
                 </h3>
                 <div className="profile-info-col">
                   <div className="profile-info-block">
-                    {(profileData._paymentmethods) ? (
-                      <ProfilePaymentMethodsMain paymentMethods={profileData._paymentmethods[0]} onChange={this.fetchProfileData} disableAddPayment={disableAddPayment} />
+                    {(profileData.paymentmethods) ? (
+                      <ProfilePaymentMethodsMain paymentMethods={profileData.paymentmethods} onChange={this.fetchProfileData} />
                     ) : ('')}
                   </div>
                 </div>

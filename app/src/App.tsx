@@ -22,9 +22,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
 import {
-  AppHeaderMain, FacebookChat, AppFooterMain, ChatComponent,
+  ClientProvider, AppHeaderMain, FacebookChat, AppFooterMain, ChatComponent,
 } from '@elasticpath/store-components';
 import intl from 'react-intl-universal';
+import * as cortex from '@elasticpath/cortex-client';
 import packageJson from '../package.json';
 import RouteWithSubRoutes from './RouteWithSubRoutes';
 import routes from './routes';
@@ -164,13 +165,38 @@ const Root = (props) => {
   ];
 };
 
+const cortexClient: cortex.IClient = cortex.createClient({
+  serverBaseUrl: '/cortex',
+  authHeader: () => localStorage.getItem('vestri_oAuthToken') as string,
+  onAuthError: async () => {
+    const result = await cortexClient.serverFetch('/oauth2/tokens', {
+      method: 'post',
+      useAuth: false,
+      urlEncoded: true,
+      body: {
+        username: '',
+        password: '',
+        grant_type: 'password',
+        role: 'PUBLIC',
+        scope: Config.cortexApi.scope,
+      },
+    });
+
+    localStorage.setItem('vestri_oAuthToken', `Bearer ${result.parsedJson.access_token}`);
+
+    return true;
+  },
+});
+
 const App = withRouter(withAnalytics(Root));
 const AppWithRouter = (props) => {
   const { componentsData } = props;
   return (
-    <Router>
-      <App componentsData={componentsData} />
-    </Router>
+    <ClientProvider value={cortexClient}>
+      <Router>
+        <App componentsData={componentsData} />
+      </Router>
+    </ClientProvider>
   );
 };
 export default AppWithRouter;

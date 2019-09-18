@@ -74,7 +74,7 @@ import ShippingOptionContainer from './ShippingOption/shippingoption.container';
 import SortProductMenuMain from './SortProductMenu/sortproductmenu.main';
 import WishListMain from './WishList/wishlist.main';
 import ChatComponent from './ChatBot/chatbot';
-import BarcodeScanner from './BarcodeScanner/barcodescanner';
+import { ClientContext, ClientProvider, ClientConsumer } from './ClientContext';
 
 export {
   init,
@@ -132,5 +132,7 @@ export {
   SortProductMenuMain,
   WishListMain,
   ChatComponent,
-  BarcodeScanner,
+  ClientContext,
+  ClientProvider,
+  ClientConsumer,
 };

@@ -19,33 +19,9 @@
  *
  */
 
-import React from 'react';
+import * as React from 'react';
+import * as cortex from '@elasticpath/cortex-client';
 
-interface ShippingOptionContainerProps {
-  option: {
-    'displayName'?: string,
-    carrier?: string,
-    cost?: {
-      display?: string
-    }[]
-  }
-}
-
-const ShippingOptionContainer: React.FunctionComponent<ShippingOptionContainerProps> = (props: ShippingOptionContainerProps) => {
-  const { option } = props;
-  return (
-    <ul className="shipping-option-container">
-      <li className="shippingOptionDisplayName">
-        {option.displayName}
-      </li>
-      <li className="shippingOptionCarrier">
-        {option.carrier}
-      </li>
-      <li className="shippingOptionCost">
-        {option.cost[0].display}
-      </li>
-    </ul>
-  );
-};
-
-export default ShippingOptionContainer;
+export const ClientContext = React.createContext<cortex.IClient | undefined>(undefined);
+export const ClientProvider = ClientContext.Provider;
+export const ClientConsumer = ClientContext.Consumer;
