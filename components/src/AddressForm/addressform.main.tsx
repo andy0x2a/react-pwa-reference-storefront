@@ -158,6 +158,7 @@ class AddressFormMain extends React.Component<AddressFormMainProps, AddressFormM
         streetAddress: address,
         'street-address': address,
         extendedAddress,
+        'extended-address': extendedAddress,
         locality: city,
         countryName: country,
         'country-name': country,
