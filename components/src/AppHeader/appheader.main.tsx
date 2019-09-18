@@ -28,7 +28,7 @@ import AppHeaderLocaleMain from '../AppHeaderLocale/appheaderlocale.main';
 import AppHeaderNavigationMain from '../AppHeaderNavigation/appheadernavigation.main';
 import AppHeaderTop from '../AppHeaderTop/appheadertop.main';
 import BulkOrderMain from '../BulkOrder/bulkorder.main';
-import headerLogo from '../images/site-images/Company-Logo-v2.svg';
+import headerLogo from '../../../app/src/images/site-images/Company-Logo-v2.svg';
 import { ClientContext } from '../ClientContext';
 
 import './appheader.main.less';

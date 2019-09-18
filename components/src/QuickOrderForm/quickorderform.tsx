@@ -23,7 +23,7 @@
 import React from 'react';
 import * as cortex from '@elasticpath/cortex-client';
 import { withRouter } from 'react-router';
-import imgPlaceholder from '../images/img_missing_horizontal@2x.png';
+import imgPlaceholder from '../../../app/src/images/img_missing_horizontal@2x.png';
 import { getConfig, IEpConfig } from '../utils/ConfigProvider';
 import { ClientContext } from '../ClientContext';
 

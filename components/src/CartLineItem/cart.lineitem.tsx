@@ -24,7 +24,7 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import * as cortex from '@elasticpath/cortex-client';
 import { getConfig, IEpConfig } from '../utils/ConfigProvider';
-import imgPlaceholder from '../images/img_missing_horizontal@2x.png';
+import imgPlaceholder from '../../../app/src/images/img_missing_horizontal@2x.png';
 /* eslint-disable-next-line import/no-cycle */
 import AppModalBundleConfigurationMain from '../AppModalBundleConfiguration/appmodalbundleconfiguration.main';
 import { ClientContext } from '../ClientContext';

@@ -130,7 +130,7 @@ class CartPage extends React.Component<RouteComponentProps, CartPageState> {
     const { location, history } = this.props;
     this.setState({ isLoading: true });
     await this.fetchCartData();
-    history.push(location.path);
+    history.push(location.pathname);
   }
 
   checkout() {
