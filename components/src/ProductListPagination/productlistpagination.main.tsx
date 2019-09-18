@@ -29,6 +29,9 @@ let intl = { get: str => str };
 
 interface ProductListPaginationProps {
   paginationDataProps: { [key: string]: any },
+  titleString?: number,
+  isTop?: boolean,
+  productListPaginationLinks?: { [key: string]: any },
 }
 
 function ProductListPagination(props: ProductListPaginationProps) {

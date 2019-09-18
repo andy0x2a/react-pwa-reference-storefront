@@ -80,7 +80,7 @@ interface OrderHistoryPageProps extends React.Component<RouteComponentProps> {
     history: any,
 }
 interface OrderHistoryPageState {
-    purchaseData: cortex.Purchase,
+    purchaseData: any,
 }
 
 class OrderHistoryPage extends React.Component<OrderHistoryPageProps, OrderHistoryPageState> {

@@ -109,7 +109,7 @@ interface SearchResultsItemsMainProps {
 
 interface SearchResultsItemsMainState {
   isLoading: boolean,
-  searchResultsModel: cortex.KeywordSearchResult,
+  searchResultsModel: any,
   loadSortedProduct: boolean,
   searchKeywords: any
 }

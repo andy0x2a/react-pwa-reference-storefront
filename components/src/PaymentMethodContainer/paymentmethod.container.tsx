@@ -25,25 +25,27 @@ interface PaymentMethodContainerProps {
   displayName: { [key: string]: any },
 }
 
-const PaymentMethodContainer: React.FunctionComponent<PaymentMethodContainerProps> = (props: PaymentMethodContainerProps) => {
-  const { displayName } = props;
-  const displayAppliedAmount = (displayName['applied-amount-display']) ? (` - ${displayName['applied-amount-display'] || ''}`) : '';
-  const displayTransactionType = (displayName['transaction-type']) ? (` - ${displayName['transaction-type'] || ''}`) : '';
+class PaymentMethodContainer extends React.Component<PaymentMethodContainerProps> {
+  render() {
+    const { displayName } = this.props;
+    const displayAppliedAmount = (displayName['applied-amount-display']) ? (` - ${displayName['applied-amount-display'] || ''}`) : '';
+    const displayTransactionType = (displayName['transaction-type']) ? (` - ${displayName['transaction-type'] || ''}`) : '';
 
-  let displayNameVar = displayName['display-value'] || displayName['display-name'];
-  if (!displayNameVar) {
-    displayNameVar = `${displayName.provider.toLowerCase().replace(/_/g, ' ')}`;
-  }
+    let displayNameVar = displayName['display-value'] || displayName['display-name'];
+    if (!displayNameVar) {
+      displayNameVar = `${displayName.provider.toLowerCase().replace(/_/g, ' ')}`;
+    }
 
-  return displayNameVar
-    ? (
+    if (!displayNameVar) return '';
+
+    return (
       <p className="payment-method-container">
         {displayNameVar}
         {displayAppliedAmount}
         {displayTransactionType}
       </p>
-    )
-    : '';
-};
+    );
+  }
+}
 
 export default PaymentMethodContainer;

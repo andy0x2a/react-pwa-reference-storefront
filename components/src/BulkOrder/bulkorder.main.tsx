@@ -21,8 +21,12 @@
 
 import React from 'react';
 import * as cortex from '@elasticpath/cortex-client';
+import BarcodeScanner from '../BarcodeScanner/barcodescanner';
+import { login } from '../utils/AuthService';
+import { cortexFetchItemLookupForm, itemLookup, searchLookup } from '../utils/CortexLookup';
 import QuickOrderForm from '../QuickOrderForm/quickorderform';
 import { ClientContext } from '../ClientContext';
+import { getConfig, IEpConfig } from '../utils/ConfigProvider';
 
 import './bulkorder.main.less';
 
@@ -108,7 +112,7 @@ export class BulkOrder extends React.Component<BulkOrderProps, BulkOrderState> {
     const arrayItems = orderItems
       .filter(item => item.code !== '')
       .map(item => ({ code: item.code, quantity: item.quantity }));
-    const body: { [key: string]: any } = {};
+    const body: any = {};
     if (arrayItems) {
       body.items = arrayItems;
     }

@@ -94,11 +94,11 @@ class ProfilePage extends React.Component<RouteComponentProps, ProfilePageState>
 
   async componentDidMount() {
     this.client = this.context;
-    await this.fetchProfileData();
+    await this.fetchProfileData(false);
   }
 
   async componentWillReceiveProps() {
-    await this.fetchProfileData();
+    await this.fetchProfileData(false);
   }
 
   async fetchProfileData(data) {

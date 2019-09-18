@@ -97,7 +97,7 @@ const zoomArray: cortex.RootFetch = {
 };
 
 interface OrderReviewPageState {
-    orderData: cortex.Order,
+    orderData: cortex.Cart,
     giftCertificateEntity: any,
     isLoading: boolean,
 }
@@ -178,7 +178,7 @@ class OrderReviewPage extends React.Component<RouteComponentProps, OrderReviewPa
         },
       },
       billingaddress: {},
-      discount: {},
+      // discount: {},
       appliedpromotions: {
         element: {},
       },
@@ -212,7 +212,20 @@ class OrderReviewPage extends React.Component<RouteComponentProps, OrderReviewPa
     const { history } = this.props;
 
     try {
-      const completePurchaseRes = await orderData.order.purchaseform({}).fetch(purchaseZoomArray);
+      const completePurchaseRes = await orderData.order.purchaseform({
+        orderId: '',
+        purchaseId: '',
+        purchaseNumber: '',
+        status: '',
+        monetaryTotal: [],
+        taxes: [],
+        taxTotal: {
+          amount: 0,
+          currency: '',
+          display: '',
+        },
+        purchaseDate: {},
+      }).fetch(purchaseZoomArray);
       this.setState({
         isLoading: false,
       });
@@ -280,11 +293,11 @@ class OrderReviewPage extends React.Component<RouteComponentProps, OrderReviewPa
   trackTransactionAnalytics() {
     const { orderData } = this.state;
     if (isAnalyticsConfigured()) {
-      const deliveries = (orderData.order.deliveries) ? orderData.order.deliveries.elements[0].shippingoptioninfo.shippingoption.cost.display : '';
-      trackAddTransactionAnalytics(orderData.self.uri.split(`/carts/${Config.cortexApi.scope}/`)[1], orderData.order.total.cost.amount, deliveries, orderData.order.tax.total.display);
+      const deliveries = (orderData.order.deliveries) ? orderData.order.deliveries.elements[0].shippingoptioninfo.shippingoption.cost[0].display : '';
+      trackAddTransactionAnalytics(orderData.uri.split(`/carts/${Config.cortexApi.scope}/`)[1], orderData.order.total.cost[0].amount, deliveries, orderData.order.tax.total.display);
       orderData.lineitems.elements.map((product) => {
-        const categoryTag = (product.item.definition.details) ? (product.item.definition.details.find(detail => detail.displayName === 'Tag')) : '';
-        return (trackAddItemAnalytics(orderData.self.uri.split(`/carts/${Config.cortexApi.scope}/`)[1], product.item.definition.displayName, product.item.code.code, product.item.price.purchasePrice.display, (categoryTag !== undefined && categoryTag !== '') ? categoryTag.displayValue : '', product.quantity));
+        const categoryTag = (product.item.definition.details) ? (product.item.definition.details.find(detail => detail[0].displayName === 'Tag')) : '';
+        return (trackAddItemAnalytics(orderData.uri.split(`/carts/${Config.cortexApi.scope}/`)[1], product.item.definition.displayName, product.item.code.code, product.item.price.purchasePrice[0].display, (categoryTag !== undefined && categoryTag !== '') ? categoryTag[0].displayValue : '', product.quantity));
       });
       sendAnalytics();
     }
@@ -359,7 +372,7 @@ class OrderReviewPage extends React.Component<RouteComponentProps, OrderReviewPa
     if (orderData && orderData.order) {
       const { messages } = orderData.order;
       for (let i = 0; i < messages.length; i++) {
-        debugMessages = debugMessages.concat(`${messages[0].debugMessages} \n `);
+        debugMessages = debugMessages.concat(`${messages[0].debugMessage} \n `);
       }
     }
     const itemDetailLink = '/itemdetail';

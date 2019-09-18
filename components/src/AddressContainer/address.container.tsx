@@ -24,18 +24,8 @@ import React from 'react';
 import './address.container.less';
 
 interface AddressContainerProps {
-    name: {
-        'given-name': string,
-        'family-name': string,
-    },
-    address: {
-        'street-address': string,
-        'extended-address': string,
-        locality: string,
-        region: string,
-        'country-name': string,
-        'postal-code': string,
-    },
+    name: any,
+    address: any,
 }
 
 function AddressContainer(props: AddressContainerProps) {

@@ -102,19 +102,19 @@ const zoomNavigation: cortex.NavigationFetch = {
       },
     },
   },
-  sortattributes: {
-    choice: {
-      description: {},
-      selectaction: {},
-      selector: {},
-    },
-    chosen: {
-      description: {},
-      selectaction: {},
-      selector: {},
-    },
-    offersearchresult: {},
-  },
+  // sortattributes: {
+  //   choice: {
+  //     description: {},
+  //     selectaction: {},
+  //     selector: {},
+  //   },
+  //   chosen: {
+  //     description: {},
+  //     selectaction: {},
+  //     selector: {},
+  //   },
+  //   offersearchresult: {},
+  // },
 };
 
 const zoomArray = [
@@ -163,7 +163,7 @@ interface CategoryItemsMainProps {
 }
 interface CategoryItemsMainState {
     isLoading: boolean,
-    categoryModel: cortex.Navigation,
+    categoryModel: any,
     loadSortedProduct: boolean,
     categoryModelDisplayName: string,
     categoryModelParentDisplayName: string,

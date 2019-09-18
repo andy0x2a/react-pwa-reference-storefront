@@ -148,17 +148,24 @@ class AddressFormMain extends React.Component<AddressFormMainProps, AddressFormM
       firstName, lastName, address, extendedAddress, city, country, subCountry, postalCode,
     } = this.state;
     const userAddress = {
+      addressId: '',
       name: {
         'given-name': firstName,
         'family-name': lastName,
       },
       address: {
+        addressId: '',
+        streetAddress: address,
         'street-address': address,
-        'extended-address': extendedAddress,
+        extendedAddress,
         locality: city,
+        countryName: country,
         'country-name': country,
         region: subCountry,
+        postalCode,
         'postal-code': postalCode,
+        phoneNumber: '',
+        organization: '',
       },
     };
 

@@ -110,7 +110,13 @@ class CartLineItem extends React.Component<CartLineItemProps, CartLineItemState>
       this.setState({ quantity: 1 });
     }
     try {
-      await this.client.lineItem(item.uri).update({ quantity });
+      await this.client.lineItem(item.uri).update({
+        quantity,
+        lineItemId: '',
+        itemId: '',
+        cartId: '',
+        configuration: {},
+      });
       handleQuantityChange();
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -141,7 +147,13 @@ class CartLineItem extends React.Component<CartLineItemProps, CartLineItemState>
     const addToCartFormUri = item.uri;
     try {
       const addToCartFormRes = await this.client.item(addToCartFormUri).fetch({ addtocartform: {} });
-      await addToCartFormRes.addtocartform({ quantity }).fetch();
+      await addToCartFormRes.addtocartform({
+        quantity,
+        lineItemId: '',
+        itemId: '',
+        cartId: '',
+        configuration: {},
+      }).fetch({});
       onConfiguratorAddToCart();
     } catch (error) {
       handleErrorMessage(error.debugMessage);
@@ -154,7 +166,13 @@ class CartLineItem extends React.Component<CartLineItemProps, CartLineItemState>
     const { item, onMoveToCart } = this.props;
     try {
       const wishListRes = await this.client.wishlistLineItem(item.self.uri).fetch({ movetocartform: {} });
-      await wishListRes.movetocartform({ quantity: 1 }).fetch({});
+      await wishListRes.movetocartform({
+        quantity: 1,
+        lineItemId: '',
+        itemId: '',
+        cartId: '',
+        configuration: {},
+      }).fetch({});
       onMoveToCart();
     } catch (error) {
       // eslint-disable-next-line no-console
