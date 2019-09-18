@@ -31,6 +31,7 @@ import './CartPage.less';
 
 const zoomDefaultCart: cortex.RootFetch = {
   defaultcart: {
+    discount: {},
     total: {},
     appliedpromotions: {
       element: {},
@@ -177,22 +178,19 @@ class CartPage extends React.Component<RouteComponentProps, CartPageState> {
 
   renderDiscount() {
     const { cartData } = this.state;
-    // if (cartData.discount) {
-    //   return cartData.discount
-    //     ? (
-    //       <li className="cart-discount">
-    //         <label htmlFor="cart_summary_discount_label" className="cart-summary-label-col">
-    //           {intl.get('discount-at-checkout')}
-    //         :&nbsp;
-    //         </label>
-    //         <span className="cart-summary-value-col">
-    //           {cartData.discount.discount[0].display}
-    //         </span>
-    //       </li>
-    //     )
-    //     : '';
-    // }
-    return ('');
+    return cartData.discount
+      ? (
+        <li className="cart-discount">
+          <label htmlFor="cart_summary_discount_label" className="cart-summary-label-col">
+            {intl.get('discount-at-checkout')}
+          :&nbsp;
+          </label>
+          <span className="cart-summary-value-col">
+            {cartData.discount.discount[0].display}
+          </span>
+        </li>
+      )
+      : '';
   }
 
   render() {
