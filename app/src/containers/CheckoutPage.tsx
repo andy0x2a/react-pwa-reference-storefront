@@ -55,19 +55,19 @@ const zoomDefaultCart: cortex.RootFetch = {
         element: {
           destinationinfo: {
             destination: {},
-            // selector: {
-            //   choice: {
-            //     description: {},
-            //   },
-            // },
+            selector: {
+              choice: {
+                description: {},
+              },
+            },
           },
           shippingoptioninfo: {
             shippingoption: {},
-            // selector: {
-            //   choice: {
-            //     description: {},
-            //   },
-            // },
+            selector: {
+              choice: {
+                description: {},
+              },
+            },
           },
         },
       },
