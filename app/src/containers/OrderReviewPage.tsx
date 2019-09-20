@@ -178,7 +178,7 @@ class OrderReviewPage extends React.Component<RouteComponentProps, OrderReviewPa
         },
       },
       billingaddress: {},
-      // discount: {},
+      discount: {},
       appliedpromotions: {
         element: {},
       },

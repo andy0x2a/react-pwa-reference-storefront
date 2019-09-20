@@ -74,7 +74,9 @@ const zoomDefaultCart: cortex.RootFetch = {
       paymentmethodinfo: {
         paymentmethod: {},
         selector: {
-          choice: {},
+          choice: {
+            description: {},
+          },
         },
       },
     },
@@ -269,21 +271,21 @@ class CheckoutPage extends React.Component<RouteComponentProps, CheckoutPageStat
       const shippingAddresses = [];
       const { destination } = orderData.order.deliveries.elements[0].destinationinfo;
       if (destination) {
-        const description = { ...destination };
-        // description.checked = true;
+        const description:any = { ...destination };
+        description.checked = true;
         shippingAddresses.push(description);
       }
-      // const { selector } = orderData.order.deliveries.elements[0].destinationinfo;
-      // if (selector) {
-      //   const choices = selector.choice || [];
-      //   choices.map((choice) => {
-      //     const description = { ...choice.description };
-      //     description.selectaction = choice.uri;
-      //     description.checked = false;
-      //     shippingAddresses.push(description);
-      //     return description;
-      //   });
-      // }
+      const { selector } = orderData.order.deliveries.elements[0].destinationinfo;
+      if (selector) {
+        const choices = selector.choice || [];
+        choices.map((choice) => {
+          const description:any = { ...choice.description };
+          description.selectaction = choice.uri;
+          description.checked = false;
+          shippingAddresses.push(description);
+          return description;
+        });
+      }
       return (
         shippingAddresses.map((shippingAddress) => {
           const {
@@ -379,21 +381,21 @@ class CheckoutPage extends React.Component<RouteComponentProps, CheckoutPageStat
       const shippingOptions = [];
       const shippingOption = orderData.order.deliveries.elements[0].shippingoptioninfo.shippingoption;
       if (shippingOption) {
-        const description = { ...shippingOption };
-        // description.checked = true;
+        const description:any = { ...shippingOption };
+        description.checked = true;
         shippingOptions.push(description);
       }
-      // const { selector } = orderData.order.deliveries.elements[0].shippingoptioninfo;
-      // if (selector && selector.choice) {
-      //   const choices = selector.choice || [];
-      //   choices.map((choice) => {
-      //     const description = { ...choice.description };
-      //     description.selectaction = choice.uri;
-      //     description.checked = false;
-      //     shippingOptions.push(description);
-      //     return description;
-      //   });
-      // }
+      const { selector } = orderData.order.deliveries.elements[0].shippingoptioninfo;
+      if (selector && selector.choice) {
+        const choices = selector.choice || [];
+        choices.map((choice) => {
+          const description:any = { ...choice.description };
+          description.selectaction = choice.uri;
+          description.checked = false;
+          shippingOptions.push(description);
+          return description;
+        });
+      }
       return (
         shippingOptions.map(option => (
           <div key={`shippingOption_${Math.random().toString(36).substr(2, 9)}`}>
@@ -441,20 +443,20 @@ class CheckoutPage extends React.Component<RouteComponentProps, CheckoutPageStat
       const billingAddresses = [];
       const billingAddress = orderData.order.billingaddressinfo.billingaddress;
       if (billingAddress) {
-        const description = { ...billingAddress };
-        // description.checked = true;
+        const description:any = { ...billingAddress };
+        description.checked = true;
         billingAddresses.push(description);
       }
       const { selector } = orderData.order.billingaddressinfo;
       if (selector) {
-        const choices = selector.choice || [];
-        // choices.map((choice) => {
-        //   const description = { ...choice.description };
-        //   description.selectaction = choice.uri;
-        //   description.checked = false;
-        //   billingAddresses.push(description);
-        //   return description;
-        // });
+        const choices:any = selector.choice || [];
+        choices.map((choice) => {
+          const description:any = { ...choice.description };
+          description.selectaction = choice.uri;
+          description.checked = false;
+          billingAddresses.push(description);
+          return description;
+        });
       }
       return (
         billingAddresses.map((billingAddr) => {
@@ -519,12 +521,26 @@ class CheckoutPage extends React.Component<RouteComponentProps, CheckoutPageStat
     if (orderData.order.paymentmethodinfo && (orderData.order.paymentmethodinfo.paymentmethod || orderData.order.paymentmethodinfo.selector.choice)) {
       const paymentMethods = [];
       const paymentMethod = orderData.order.paymentmethodinfo.paymentmethod;
-      // if (paymentMethod) {
-      //   const description = { ...paymentMethod };
-      //   description.checked = true;
-      //   description.deletable = false;
-      //   paymentMethods.push(description);
-      // }
+      if (paymentMethod) {
+        const description:any = { ...paymentMethod };
+        description.checked = true;
+        description.deletable = false;
+        paymentMethods.push(description);
+      }
+
+      const { selector } = orderData.order.paymentmethodinfo;
+
+      if (selector) {
+        const choices = selector.choice || [];
+        // choices.map((choice) => {
+        //   const description = { ...choice.description };
+        //   description.selectaction = choice.uri;
+        //   description.checked = false;
+        //   description.deletable = true;
+        //   paymentMethods.push(description);
+        //   return description;
+        // });
+      }
 
       return (
         paymentMethods.map((payment) => {
