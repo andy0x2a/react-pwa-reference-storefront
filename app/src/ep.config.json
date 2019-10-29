@@ -34,13 +34,13 @@
     "dashboard": true,
     "authServiceAPI": {
       "path": "/admin",
-      "pathForProxy": "https://api.master-branch-ci.am.reference.elasticpath.com",
+      "pathForProxy": "https://api.qa.am.reference.elasticpath.com",
       "reqTimeout": "30000"
     },
     "keycloak": {
       "callbackUrl": "http://localhost:8080",
-      "loginRedirectUrl": "https://login.master-branch-ci.am.reference.elasticpath.com/auth/realms/Commerce/protocol/openid-connect/auth",
-      "logoutRedirectUrl": "https://login.master-branch-ci.am.reference.elasticpath.com/auth/realms/Commerce/protocol/openid-connect/logout",
+      "loginRedirectUrl": "https://login.qa.am.reference.elasticpath.com/auth/realms/Commerce/protocol/openid-connect/auth",
+      "logoutRedirectUrl": "https://login.qa.am.reference.elasticpath.com/auth/realms/Commerce/protocol/openid-connect/logout",
       "client_id": "reference-storefront"
     }
   },
