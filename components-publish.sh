@@ -14,7 +14,7 @@ isChanged=$(
 if [[ ${isChanged} == ${publishDirName} ]]
 then
     git checkout RS-516-automate-version-increment
-    npm version patch  -m "Components Bump"
+    npm version patch  -m "Components %s skip_ci"
     # git push
     # npm publish components/
     exit 0
